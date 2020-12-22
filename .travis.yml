@@ -1,0 +1,27 @@
+sudo: required
+language: generic
+
+services:
+  - docker
+
+before_install:
+  - docker build -t jperezsl/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true jperezsl/react-test npm test
+
+after_success:
+  - docker build -t jperezsl/complex-client ./client
+  - docker build -t jperezsl/complex-server ./server
+  - docker build -t jperezsl/complex-nginx ./nginx
+  - docker build -t jperezsl/complex-worker ./worker 
+
+  # login into docker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  # push imgages
+  - docker push jperezsl/complex-client
+  - docker push jperezsl/complex-server
+  - docker push jperezsl/complex-nginx
+  - docker push jperezsl/complex-worker
+  
