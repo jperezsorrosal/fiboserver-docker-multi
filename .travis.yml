@@ -24,4 +24,15 @@ after_success:
   - docker push jperezsl/complex-server
   - docker push jperezsl/complex-nginx
   - docker push jperezsl/complex-worker
-  
+
+deploy:
+  provider: elasticbeanstalk
+  region: 'us-east-1'
+  app: 'multi-docker'
+  env: 'MultiDocker-env'
+  bucket_name: 'elasticbeanstalk-us-east-1-569724667046'
+  bucket_path: 'docker-multi'
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
